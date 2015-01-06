@@ -1,0 +1,13 @@
+C:\Users\opo140030\Documents\Visual Studio 2013\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Release\FaceTrackData.dll
+C:\Users\opo140030\Documents\Visual Studio 2013\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Release\FaceTrackLib.dll
+C:\Users\opo140030\Documents\Visual Studio 2013\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Release\Microsoft.Kinect.Toolkit.FaceTracking.dll
+C:\Users\opo140030\Documents\Visual Studio 2013\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Release\Microsoft.Kinect.Toolkit.FaceTracking.pdb
+C:\Users\opo140030\Documents\Visual Studio 2013\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Release\Microsoft.Kinect.Toolkit.FaceTracking.dll
+C:\Users\opo140030\Documents\Visual Studio 2013\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Release\Microsoft.Kinect.Toolkit.FaceTracking.pdb
+C:\Users\opo140030\Documents\Visual Studio 2013\Projects\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Release\FaceTrackData.dll
+C:\Users\opo140030\Documents\Visual Studio 2013\Projects\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Release\FaceTrackLib.dll
+C:\Users\opo140030\Documents\Visual Studio 2013\Projects\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Release\Microsoft.Kinect.Toolkit.FaceTracking.dll
+C:\Users\opo140030\Documents\Visual Studio 2013\Projects\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\bin\x86\Release\Microsoft.Kinect.Toolkit.FaceTracking.pdb
+C:\Users\opo140030\Documents\Visual Studio 2013\Projects\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Release\Microsoft.Kinect.Toolkit.FaceTracking.dll
+C:\Users\opo140030\Documents\Visual Studio 2013\Projects\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Release\Microsoft.Kinect.Toolkit.FaceTracking.pdb
+C:\Users\opo140030\Documents\Visual Studio 2013\Projects\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\Microsoft.Kinect.Toolkit.FaceTracking\obj\Win32\Release\Microsoft.Kinect.Toolkit.FaceTracking.csprojResolveAssemblyReference.cache
