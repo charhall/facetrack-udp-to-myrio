@@ -9,26 +9,68 @@ namespace FaceTrackingBasics
     using Microsoft.Kinect;
     using Microsoft.Kinect.Toolkit.FaceTracking;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.IO.MemoryMappedFiles;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using System.Net;
     using System.Net.Sockets;
+    using System.Runtime.InteropServices;
+    using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
+    using System.Threading;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
+    using System.Windows.Media.Media3D;
     using Point = System.Windows.Point;
 
     /// <summary>
     /// Class that uses the Face Tracking SDK to display a face mask for
     /// tracked skeletons
     /// </summary>
-    /// 
+/*
+    ///  // Defines Max in an object enumerable
+    public static class EnumerableExtensions
+    {
+        public static T MaxObject<T, U>(this IEnumerable<T> source, Func<T, U> selector)
+          where U : IComparable<U>
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            bool first = true;
+            T maxObj = default(T);
+            U maxKey = default(U);
+            foreach (var item in source)
+            {
+                if (first)
+                {
+                    maxObj = item;
+                    maxKey = selector(maxObj);
+                    first = false;
+                }
+                else
+                {
+                    U currentKey = selector(item);
+                    if (currentKey.CompareTo(maxKey) > 0)
+                    {
+                        maxKey = currentKey;
+                        maxObj = item;
+                    }
+                }
+            }
+            if (first) throw new InvalidOperationException("Sequence is empty.");
+            return maxObj;
+        }
+    }
+    // ends max defo
+    */
 
-    //GetSlices Here
+    // SerializedStuct of vector3df
+
+
+    // Define GetSlices
     public static class Ext
     {
         public static IEnumerable<T[]> GetSlices<T>(this IEnumerable<T> source, int n)
@@ -45,13 +87,14 @@ namespace FaceTrackingBasics
         }
     }
     //End GetSlices
-    
+
+
     public partial class FaceTrackingViewer : UserControl, IDisposable
     {
         public static readonly DependencyProperty KinectProperty = DependencyProperty.Register(
-            "Kinect",
-            typeof(KinectSensor),
-            typeof(FaceTrackingViewer),
+            "Kinect", 
+            typeof(KinectSensor), 
+            typeof(FaceTrackingViewer), 
             new PropertyMetadata(
                 null, (o, args) => ((FaceTrackingViewer)o).OnSensorChanged((KinectSensor)args.OldValue, (KinectSensor)args.NewValue)));
 
@@ -69,12 +112,54 @@ namespace FaceTrackingBasics
 
         private bool disposed;
 
-       // private Skeleton[] skeletonData;
+        private Skeleton[] skeletonData;
+        /*
+        // Access Physical Memory of Computer
+        const int PROCESS_VM_WRITE = 0x0020;
+        const int PROCESS_VM_OPERATION = 0x0008;
+        [DllImport("kernel32.dll")]
+        static extern IntPtr OpenProcess(ProcessAccessFlags dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] bool bInheritHandle, int dwProcessId);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, uint nSize, out int lpNumberOfBytesWritten);
+
+        [DllImport("kernel32.dll")]
+        public static extern Int32 CloseHandle(IntPtr hProcess);
+        // ends here
+        */
         private Int32 trackingID = 0;
-
         private int frameNumber = 0;
+        /*
+        //Flags Defined
+        [Flags]
+        public enum ProcessAccessFlags : uint
+        {
+            All = 0x001F0FFF,
+            Terminate = 0x00000001,
+            CreateThread = 0x00000002,
+            VMOperation = 0x00000008,
+            VMRead = 0x00000010,
+            VMWrite = 0x00000020,
+            DupHandle = 0x00000040,
+            SetInformation = 0x00000200,
+            QueryInformation = 0x00000400,
+            Synchronize = 0x00100000
+        }
+        // Flags defo ends here
+        */
+    /*    
+        public static void WriteMem(Process p, int address, long v)
+        {
+            var hProc = OpenProcess(ProcessAccessFlags.All, false, p.Id);
+            var val = new byte[] { (byte)v };
 
+            int fubar = 0;
+            WriteProcessMemory(hProc, new IntPtr(address), val, (UInt32)val.LongLength, out fubar);
+
+            CloseHandle(hProc);
+        }
+*/
+       
         public FaceTrackingViewer()
         {
             this.InitializeComponent();
@@ -114,7 +199,6 @@ namespace FaceTrackingBasics
             }
         }
 
- 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
@@ -122,6 +206,37 @@ namespace FaceTrackingBasics
             {
                 faceInformation.DrawFaceModel(drawingContext);
             }
+        }
+        // BEGIN:  // convert between bytes and float
+        public unsafe byte[] FloatsToBytes(float[] floats)
+        {
+
+            fixed (void* pFloats = floats)
+            {
+                byte* pBytes = (byte*)pFloats;
+                byte[] bytes = new byte[sizeof(float) * floats.Length];
+                Marshal.Copy((IntPtr)pBytes, bytes, 0, floats.Length * sizeof(byte));
+                return bytes;
+            }
+        }
+
+        public unsafe float[] BytesToFloats(byte[] bytes)
+        {
+
+            fixed (void* pBytes = bytes)
+            {
+                float* pFloats = (float*)pBytes;
+                float[] floats = new float[bytes.Length / sizeof(float)];
+                Marshal.Copy((IntPtr)pFloats, floats, 0, bytes.Length / sizeof(float));
+                return floats;
+            }
+        }
+        // END: convert between bytes and float
+
+        // TRY BYTES CONVERSION: _h_ttp://msdn.microsoft.com/en-us/library/yhwsaf3w(v=vs.110).aspx
+        public static void GetBytesSingle(float argument)
+        {
+            byte[] byteArray = BitConverter.GetBytes(argument);
         }
 
         private void OnAllFramesReady(object sender, AllFramesReadyEventArgs allFramesReadyEventArgs)
@@ -206,7 +321,7 @@ namespace FaceTrackingBasics
             }
         }
 
-
+        
         private void OnSensorChanged(KinectSensor oldSensor, KinectSensor newSensor)
         {
             if (oldSensor != null)
@@ -270,7 +385,7 @@ namespace FaceTrackingBasics
 
             private bool lastFaceTrackSucceeded;
 
-            // private SkeletonTrackingState skeletonTrackingState;
+           // private SkeletonTrackingState skeletonTrackingState;
 
             public int LastTrackedFrame { get; set; }
 
@@ -289,7 +404,7 @@ namespace FaceTrackingBasics
                 {
                     return;
                 }
-
+                
                 var faceModelPts = new List<Point>();
                 var faceModel = new List<FaceModelTriangle>();
 
@@ -320,12 +435,11 @@ namespace FaceTrackingBasics
                 drawingContext.DrawGeometry(Brushes.LightYellow, new Pen(Brushes.LightYellow, 1.0), faceModelGroup);
             }
 
-
+            
             /// <summary>
             /// Updates the face tracking information for this skeleton
             /// </summary>
             /// 
-
             internal void OnFrameReady(KinectSensor kinectSensor, ColorImageFormat colorImageFormat, byte[] colorImage, DepthImageFormat depthImageFormat, short[] depthImage)
             {
                 if (this.faceTracker == null)
@@ -359,14 +473,12 @@ namespace FaceTrackingBasics
                         }
 
                         this.facePoints = frame.GetProjected3DShape();
-
-                        int index = 1;
-
+                        int n = 121;
                         this.facePoints3D = frame.Get3DShape();
 
-
                         // UDP Connection  :: Talker ::
-                        Boolean done = false;
+                        Boolean done = false; 
+
                         Boolean exception_thrown = false;
 
                         Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -375,36 +487,47 @@ namespace FaceTrackingBasics
 
                         IPEndPoint sending_end_point = new IPEndPoint(send_to_address, 80);
 
+                        UdpClient listener = new UdpClient(80);
+
                         while (!done)
                         {
-                            //foreach (Vector3DF[] vector in facePoints3D.GetSlices(n))
-                          foreach (Vector3DF vector in facePoints3D)
+                          /*  int index = 0;
+                            byte[] bytearray = new byte[facePoints3D.Count * 4];  */
+
+                           foreach (Vector3DF vector in facePoints3D)
                             {
                                 //arrange
-                                byte[] bytearray = BitConverter.GetBytes(vector.Z);
-                                Console.WriteLine(bytearray);
-                              /*
-                                var copier = new VectorSerializer();
+                              /*   Array.Copy(BitConverter.GetBytes((float)vector.Z), 0, bytearray, index, 4);
+                                 index += 4;   */
+                            
+                                float zvect = vector.Z;
 
-                                //act 
-                                byte[] bytearray = copier.SerializeVectors(vector);
-                                Vector3DF[] copiedVectors = copier.DeserializeVectors(bytearray);
-                              */
-                                //send_buffer = bytearray;
+                                byte[] bytearray = BitConverter.GetBytes(zvect);
+                               
+                              
+                                //byte[] bytearray = Encoding.ASCII.GetBytes("The Little Boy is Good");
+                               /*
+                                if (BitConverter.IsLittleEndian)
+                                    Array.Reverse(bytearray); 
+                               */
                                 // Remind the user of where this is going.
-                                Console.WriteLine("sending to address: {0} port: {1}",
-                                sending_end_point.Address,
-                                sending_end_point.Port);
-
+                                
+                                Console.WriteLine("sending to address: {0} port: {1}", sending_end_point.Address,  sending_end_point.Port);
+                                
                                 try
                                 {
+                                    //sending_socket.SendTo(data, sending_end_point);
                                     sending_socket.SendTo(bytearray, sending_end_point);
+
+                                    Console.WriteLine("Message was sent");
                                 }
+
                                 catch (Exception send_exception)
                                 {
                                     exception_thrown = true;
                                     Console.WriteLine(" Exception {0}", send_exception.Message);
                                 }
+
                                 if (exception_thrown == false)
                                 {
                                     Console.WriteLine("Message has been sent to the broadcast address");
@@ -417,22 +540,57 @@ namespace FaceTrackingBasics
                                 }
 
                             }   //ends foreach statement
+
+                            // start listening
+                            
+                         /*   byte[] bytes = listener.Receive(ref sending_end_point);  
+
+                            Console.WriteLine("Received broadcast from {0} :\n {1}\n", sending_end_point.ToString(), Encoding.ASCII.GetString(bytes, 0, bytes.Length));   */
+                           
                         }  //ends while(!done) statement
 
                         // ends udp talker
 
+
+  
                         /*
-                        foreach (Vector3DF vector in facePoints3D)
+                        using (MemoryStream stream = new MemoryStream())
                         {
-                            //Console.WriteLine(string.Format("{0}: {1}, {2}, {3}" , index++, vector.X, vector.Y, vector.Z));
-                            Console.WriteLine(vector.Z);
+                            var sw = new StreamWriter(stream);
+
+                            int n = 121;
+
+                            foreach (Vector3DF[] vector in facePoints3D.GetSlices(n))
+                            {
+                                //arrange
+                                var copier = new VectorSerializer();
+
+                                //act 
+                                byte[] bytearray = copier.SerializeVectors(vector);
+                                Vector3DF[] copiedVectors = copier.DeserializeVectors(bytearray);
+
+                                //use MemoryFileManager Library
+                                MemoryMappedFileCommunicator communicator = new MemoryMappedFileCommunicator("MemoryMappedShare", 10240);
+
+                                // This process reads data that begins in the position 2000 and writes starting from the position 0.
+                                communicator.ReadPosition = 2000;
+                                communicator.WritePosition = 0; 
+                                
+                                // Creates an handler for the event that is raised when data are available in the MemoryMappedFile. 
+                                //communicator.DataReceived += new EventHandler<MemoryMappedDataReceivedEventArgs>(communicator_DataReceived); 
+                               // communicator.StartReader();
+                                
+                                //Write to the Shared File
+                                communicator.Write(bytearray);
+                            }
+
                         }
                         */
                     }
                 }
             }
-
-            private struct FaceModelTriangle
+        
+        private struct FaceModelTriangle
             {
                 public Point P1;
                 public Point P2;

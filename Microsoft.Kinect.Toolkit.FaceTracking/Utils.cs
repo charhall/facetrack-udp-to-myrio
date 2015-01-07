@@ -357,8 +357,9 @@ namespace Microsoft.Kinect.Toolkit.FaceTracking
     /// <summary>
     /// Represents a 3D vector with x,y,z elements
     /// </summary>
-    [DebuggerDisplay("({X},{Y},{Z})")]
-    [StructLayout(LayoutKind.Sequential)]
+   // [DebuggerDisplay("({X},{Y},{Z})")]
+    //[StructLayout(LayoutKind.Sequential)]
+    [Serializable]
     public struct Vector3DF
     {
         public Vector3DF(float x, float y, float z)
@@ -395,21 +396,34 @@ namespace Microsoft.Kinect.Toolkit.FaceTracking
 
         public override int GetHashCode()
         {
-            return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
+            unchecked
+            {
+                int hashCode = X.GetHashCode();
+                hashCode = (hashCode * 397) ^ Y.GetHashCode();
+                hashCode = (hashCode * 397) ^ Z.GetHashCode();
+                return hashCode;
+            }
+            // return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
+            /*if (ReferenceEquals(null, obj)) return false;
+            return obj is Vector3DF && Equals((Vector3DF)obj);*/
+           
             if (!(obj is Vector3DF))
             {
                 return false;
             }
 
             return Equals((Vector3DF)obj);
+            
         }
 
         public bool Equals(Vector3DF other)
         {
+            //return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
+            
             if (X != other.X)
             {
                 return false;
@@ -421,6 +435,7 @@ namespace Microsoft.Kinect.Toolkit.FaceTracking
             }
 
             return Z == other.Z;
+            
         }
     }
 

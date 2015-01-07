@@ -4,17 +4,17 @@
 exe
 C#
 .cs
-C:\Users\opo140030\Documents\Visual Studio 2013\Projects\FaceTrackingBasics-WPF-C-Sharp-Non-skeletal-objects\FaceTrackingBasics-WPF\obj\Win32\Release\
+C:\Users\opo140030\Documents\Visual Studio 2013\facetrack-udp-to-myrio\FaceTrackingBasics-WPF\obj\Win32\Release\
 FaceTrackingBasics
 none
 false
 TRACE
-
-3146336661
+C:\Users\opo140030\Documents\Visual Studio 2013\facetrack-udp-to-myrio\FaceTrackingBasics-WPF\App.xaml
+2-221725455
 
 7-550334778
-16-533434581
-App.xaml;FaceTrackingViewer.xaml;MainWindow.xaml;
+16-945210204
+FaceTrackingViewer.xaml;MainWindow.xaml;
 
 False
 
